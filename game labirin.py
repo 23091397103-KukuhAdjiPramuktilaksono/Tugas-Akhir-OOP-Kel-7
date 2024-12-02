@@ -1,37 +1,51 @@
 import tkinter as tk
+from abc import ABC, abstractmethod
 
-class Game:
-    def __init__(self):
-        self.root = tk.Tk()
-        self.root.title("Game Labirin OOP")
-        self.canvas = tk.Canvas(self.root, width=500, height=500)
-        self.canvas.pack()
+class GameObject(ABC):
+    """Kelas abstrak untuk elemen permainan."""
+    def __init__(self, row, col):
+        self.position = [row, col]
 
-        # Inisialisasi elemen game
-        self.maze = Maze()
-        self.player = Player(1, 1)
-        self.goal = Goal(7, 8)
+    @abstractmethod
+    def draw(self, canvas):
+        pass
+        
+class Maze(GameObject):
+    def __init__(self, structure):
+        super().__init__(0, 0)  # Labirin tidak memiliki posisi spesifik
+        self.structure = structure
 
-        # Menggambar elemen awal
-        self.maze.draw(self.canvas)
-        self.goal.draw(self.canvas)
-        self.player.draw(self.canvas)
+    def draw(self, canvas):
+        for row in range(len(self.structure)):
+            for col in range(len(self.structure[row])):
+                x1, y1 = col * 50, row * 50
+                x2, y2 = x1 + 50, y1 + 50
+                if self.structure[row][col] == 1:
+                    canvas.create_rectangle(x1, y1, x2, y2, fill="black")
 
-        # Bind input
-        self.root.bind("<Key>", self.handle_input)
+class Player(GameObject):
+    def draw(self, canvas):
+        x1, y1 = self.position[1] * 50, self.position[0] * 50
+        x2, y2 = x1 + 50, y1 + 50
+        canvas.create_rectangle(x1, y1, x2, y2, fill="blue")
 
-    def handle_input(self, event):
-        direction = event.keysym
-        self.player.move(direction, self.maze)
-        self.canvas.delete("all")
-        self.maze.draw(self.canvas)
-        self.goal.draw(self.canvas)
-        self.player.draw(self.canvas)
+    def move(self, direction, maze):
+        new_position = self.position[:]
+        if direction == "Up":
+            new_position[0] -= 1
+        elif direction == "Down":
+            new_position[0] += 1
+        elif direction == "Left":
+            new_position[1] -= 1
+        elif direction == "Right":
+            new_position[1] += 1
 
-        if self.player.position == self.goal.position:
-            self.canvas.create_text(250, 250, text="You Win!", font=("Arial", 24), fill="red")
+        if maze.structure[new_position[0]][new_position[1]] == 0:
+            self.position = new_position
 
-    def start(self):
-        self.root.mainloop()
-
+class Goal(GameObject):
+    def draw(self, canvas):
+        x1, y1 = self.position[1] * 50, self.position[0] * 50
+        x2, y2 = x1 + 50, y1 + 50
+        canvas.create_rectangle(x1, y1, x2, y2, fill="green")
 
