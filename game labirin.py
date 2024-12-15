@@ -1,4 +1,6 @@
 import tkinter as tk
+import time
+
 from abc import ABC, abstractmethod
 
 class GameObject(ABC):
