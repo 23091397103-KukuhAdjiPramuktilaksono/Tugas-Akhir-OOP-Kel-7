@@ -1,6 +1,5 @@
 import tkinter as tk
 import time
-
 from abc import ABC, abstractmethod
 
 class GameObject(ABC):
@@ -11,7 +10,7 @@ class GameObject(ABC):
     @abstractmethod
     def draw(self, canvas):
         pass
-        
+
 class Maze(GameObject):
     def __init__(self, structure):
         super().__init__(0, 0)  # Labirin tidak memiliki posisi spesifik
@@ -82,37 +81,6 @@ class Game:
                 "player": [1, 1],
                 "goal": [7, 8],
             },
-            {
-                "maze": [
-                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                    [1, 0, 0, 0, 1, 0, 0, 0, 0, 1],
-                    [1, 0, 1, 1, 1, 0, 1, 1, 0, 1],
-                    [1, 0, 0, 0, 0, 0, 1, 1, 0, 1],
-                    [1, 1, 1, 1, 1, 0, 0, 0, 0, 1],
-                    [1, 0, 0, 0, 1, 1, 1, 1, 0, 1],
-                    [1, 0, 1, 0, 0, 0, 0, 0, 0, 1],
-                    [1, 0, 1, 1, 1, 1, 1, 1, 0, 1],
-                    [1, 0, 0, 0, 0, 0, 0, 1, 0, 1],
-                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                ],
-                "player": [1, 1],
-                "goal": [6, 8],
-            },
-            {
-                "maze": [
-                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                    [1, 0, 1, 0, 0, 0, 1, 1, 0, 1],
-                    [1, 0, 1, 0, 1, 0, 0, 1, 0, 1],
-                    [1, 0, 0, 0, 1, 1, 0, 1, 0, 1],
-                    [1, 1, 1, 0, 0, 0, 0, 1, 0, 1],
-                    [1, 0, 0, 0, 1, 1, 0, 0, 0, 1],
-                    [1, 0, 1, 0, 0, 1, 1, 1, 0, 1],
-                    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                ],
-                "player": [1, 1],
-                "goal": [7, 7],
-            },
         ]
 
         self.current_level = 0
@@ -173,8 +141,28 @@ class Game:
             250, 250, text=f"Final Score: {self.total_score}", font=("Arial", 18), fill="blue"
         )
 
+class MainMenu:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Main Menu")
+
+        self.frame = tk.Frame(self.root)
+        self.frame.pack()
+
+        title = tk.Label(self.frame, text="Maze Game", font=("Arial", 24))
+        title.pack(pady=20)
+
+        start_button = tk.Button(self.frame, text="Start Game", font=("Arial", 16), command=self.start_game)
+        start_button.pack(pady=10)
+
+        exit_button = tk.Button(self.frame, text="Exit", font=("Arial", 16), command=self.root.quit)
+        exit_button.pack(pady=10)
+
+    def start_game(self):
+        self.frame.destroy()
+        Game(self.root)
+
 if __name__ == "__main__":
     root = tk.Tk()
-    game = Game(root)
+    MainMenu(root)
     root.mainloop()
-
