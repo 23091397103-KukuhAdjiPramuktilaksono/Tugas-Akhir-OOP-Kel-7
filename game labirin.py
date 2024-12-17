@@ -1,5 +1,6 @@
 import tkinter as tk
 import time
+import heapq
 from abc import ABC, abstractmethod
 
 class GameObject(ABC):
@@ -144,7 +145,6 @@ class Game:
         self.maze = Maze(level_data["maze"])
         self.player = Player(*level_data["player"])
         self.goal = Goal(*level_data["goal"])
-        self.countdown_time = 20 # Reset timer saat level dimulai
         self.draw_elements()
 
     def draw_elements(self):
