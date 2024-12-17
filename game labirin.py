@@ -116,14 +116,14 @@ class Game:
             self.finish_level()
 
     def update_timer(self):
-         if self.countdown_time > 0:
+        if self.countdown_time > 0:
             self.timer_label.config(text=f"Time: {self.countdown_time}")
             self.countdown_time -= 1
             self.root.after(1000, self.update_timer)
         else:
             self.end_game()
 
-  def finish_level(self):
+    def finish_level(self):
         level_score = max(100 - (20 - self.countdown_time) * 10, 0)
         self.total_score += level_score
         self.score_label.config(text=f"Total Score: {self.total_score}")
