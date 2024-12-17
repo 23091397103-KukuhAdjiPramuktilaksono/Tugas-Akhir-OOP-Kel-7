@@ -59,7 +59,7 @@ class Game:
         self.canvas = tk.Canvas(self.root, width=500, height=500)
         self.canvas.pack()
 
-        self.timer_label = tk.Label(self.root, text="Time: 0", font=("Arial", 16))
+        self.timer_label = tk.Label(self.root, text="Time: 20", font=("Arial", 16))
         self.timer_label.pack()
         self.score_label = tk.Label(self.root, text="Total Score: 0", font=("Arial", 16))
         self.score_label.pack()
@@ -84,7 +84,7 @@ class Game:
         ]
 
         self.current_level = 0
-        self.start_time = time.time()
+        self.countdown_time = 20
         self.total_score = 0
 
         self.load_level()
@@ -96,7 +96,7 @@ class Game:
         self.maze = Maze(level_data["maze"])
         self.player = Player(*level_data["player"])
         self.goal = Goal(*level_data["goal"])
-        self.start_time = time.time()
+        self.countdown_time = 20 # Reset timer saat level dimulai
         self.draw_elements()
 
     def draw_elements(self):
@@ -115,9 +115,16 @@ class Game:
         if self.player.position == self.goal.position:
             self.finish_level()
 
-    def finish_level(self):
-        elapsed_time = int(time.time() - self.start_time)
-        level_score = max(100 - elapsed_time * 10, 0)
+    def update_timer(self):
+         if self.countdown_time > 0:
+            self.timer_label.config(text=f"Time: {self.countdown_time}")
+            self.countdown_time -= 1
+            self.root.after(1000, self.update_timer)
+        else:
+            self.end_game()
+
+  def finish_level(self):
+        level_score = max(100 - (20 - self.countdown_time) * 10, 0)
         self.total_score += level_score
         self.score_label.config(text=f"Total Score: {self.total_score}")
         self.current_level += 1
@@ -126,11 +133,6 @@ class Game:
             self.load_level()
         else:
             self.end_game()
-
-    def update_timer(self):
-        elapsed_time = int(time.time() - self.start_time)
-        self.timer_label.config(text=f"Time: {elapsed_time}")
-        self.root.after(1000, self.update_timer)
 
     def end_game(self):
         self.canvas.delete("all")
