@@ -199,7 +199,7 @@ class MainMenu:
         self.frame = tk.Frame(self.root)
         self.frame.pack()
 
-        title = tk.Label(self.frame, text="Maze Game", font=("Arial", 24))
+        title = tk.Label(self.frame, text="Maze Challenge", font=("Arial", 24))
         title.pack(pady=20)
 
         start_button = tk.Button(self.frame, text="Start Game", font=("Arial", 16), command=self.start_game)
