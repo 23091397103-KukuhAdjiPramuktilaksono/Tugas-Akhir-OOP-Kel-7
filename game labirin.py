@@ -98,7 +98,84 @@ class Game:
                 "player": [1, 1],
                 "goal": [8, 8],
             },
-        ]
+             {  # Level 3
+                "maze": [
+                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                    [1, 0, 0, 0, 0, 1, 1, 0, 0, 1],
+                    [1, 1, 1, 1, 0, 0, 0, 0, 0, 1],
+                    [1, 0, 0, 1, 0, 1, 1, 1, 0, 1],
+                    [1, 0, 1, 1, 0, 0, 0, 1, 0, 1],
+                    [1, 0, 0, 0, 1, 1, 0, 1, 0, 1],
+                    [1, 1, 1, 0, 0, 0, 0, 1, 0, 1],
+                    [1, 0, 0, 0, 1, 1, 1, 1, 0, 1],
+                    [1, 0, 1, 0, 0, 0, 0, 0, 0, 1],
+                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                ],
+                "player": [1, 1],
+                "goal": [8, 8],
+            },
+         {  # Level 4
+                 "maze": [
+                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                [1, 0, 0, 0, 0, 1, 1, 0, 0, 1],
+                [1, 0, 1, 1, 0, 1, 0, 0, 1, 1],
+                [1, 0, 1, 0, 0, 0, 0, 1, 0, 1],
+                [1, 0, 1, 0, 1, 1, 0, 1, 0, 1],
+                [1, 0, 0, 0, 0, 1, 0, 0, 0, 1],
+                [1, 1, 1, 1, 0, 1, 1, 1, 0, 1],
+                [1, 0, 0, 0, 0, 0, 0, 1, 0, 1],
+                [1, 0, 1, 1, 1, 1, 0, 0, 0, 1],
+                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            ],
+            "player": [1, 1],
+            "goal": [8, 8],
+             },
+    ]
+
+        self.current_level = 0
+        self.countdown_time = 20
+        self.total_score = 0
+
+        self.load_level()
+        self.root.bind("<Key>", self.handle_input)
+        self.update_timer()
+
+    def load_level(self):
+        level_data = self.levels[self.current_level]
+        self.maze = Maze(level_data["maze"])
+        self.player = Player(*level_data["player"])
+        self.goal = Goal(*level_data["goal"])
+        self.draw_elements()
+
+    def draw_elements(self):
+        self.canvas.delete("all")
+        self.maze.draw(self.canvas)
+        self.goal.draw(self.canvas)
+        self.player.draw(self.canvas)
+
+    def handle_input(self, event):
+        if event.keysym in ["Up", "Down", "Left", "Right"]:
+            self.player.move(event.keysym, self.maze)
+            self.check_goal()
+            self.draw_elements()
+
+    def check_goal(self):
+        if self.player.position == self.goal.position:
+            self.finish_level()
+
+    def update_timer(self):
+        if self.countdown_time > 0:
+            self.timer_label.config(text=f"Time: {self.countdown_time}")
+            self.countdown_time -= 1
+            self.root.after(1000, self.update_timer)
+        else:
+            self.end_game()  # Tetap jalankan logika end_game saat waktu habis
+
+    def finish_level(self):
+        level_score = max(100 - (20 - self.countdown_time) * 10, 0)
+        self.total_score += level_score
+        self.score_label.config(text=f"Total Score: {self.total_score}")
+        self.current_level += 1
 
         self.current_level = 0
         self.player_pos = self.levels[0]["player"]
